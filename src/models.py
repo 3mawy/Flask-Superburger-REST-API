@@ -28,8 +28,8 @@ def setup_db(app, database_path=database_path):
 Association tables
 '''
 menu_items_sizes = db.Table('menu_items_sizes',
-                            Column('item_id', Integer, ForeignKey('menu_items.id'), primary_key=True),
-                            Column('size_id', Integer, ForeignKey('sizes.id'), primary_key=True)
+                            db.Column('item_id', Integer, ForeignKey('menu_items.id'), primary_key=True),
+                            db.Column('size_id', Integer, ForeignKey('sizes.id'), primary_key=True)
                             )
 
 
