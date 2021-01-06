@@ -4,9 +4,9 @@ from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
-AUTH0_DOMAIN = 'dev-3mawy.us.auth0.com'
+AUTH0_DOMAIN = 'superburger.us.auth0.com'
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'coffeshop'
+API_AUDIENCE = 'superapi'
 
 # AuthError Exception
 
