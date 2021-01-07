@@ -4,16 +4,19 @@ from flask_cors import CORS
 
 from models import setup_db, MenuItem, Category, Size, update
 from auth import requires_auth
+
 ITEMS_PER_PAGE = 8
 
 
-def paginate_menu(request, selection):
+def paginate(request, selection):
     page = request.args.get('page', 1, type=int)
     start = (page - 1) * ITEMS_PER_PAGE
     end = start + ITEMS_PER_PAGE
 
     items = [item.format() for item in selection]
     current_items = items[start:end]
+    if len(current_items) == 0:
+        abort(404)
     return current_items
 
 
@@ -34,17 +37,16 @@ def create_app(test_config=None):
     def get_menu_items(jwt):
         try:
             items = MenuItem.query.order_by(MenuItem.id).all()
-            paginated_menu = paginate_menu(request, items)
-            if len(paginated_menu) == 0:
-                abort(404)
+            paginated_menu = paginate(request, items)
+
             return jsonify({
                 'success': True,
                 'menu_items': paginated_menu,
             })
         except:
-                if len(items) == 0:
-                    abort(404)
-                abort(500)
+            if len(items) or len(paginated_menu) == 0:
+                abort(404)
+            abort(500)
 
     @app.route('/menuitems/<int:item_id>', methods=["GET"])
     @requires_auth('get:item_details')
@@ -67,13 +69,20 @@ def create_app(test_config=None):
     def add_menu_item(jwt):
         try:
             data = request.get_json()
-            print(data)
+
             name = data.get('name', 'Test')
             category = data.get('category', 2)
             description = data.get('description', 'Test')
             ingredients = data.get('ingredients', 'Test')
             active = data.get('active', True)
-            item = MenuItem(name=name, category=category, description=description, ingredients=ingredients, active=active, )
+
+            if 'item_id' in data:
+                item_id = data.get('item_id', )
+                item = MenuItem(id=item_id, name=name, category_id=category, description=description,
+                                ingredients=ingredients, active=active, )
+            else:
+                item = MenuItem(name=name, category_id=category, description=description,
+                                ingredients=ingredients, active=active, )
             item.insert()
             return jsonify({
                 'success': True,
@@ -87,29 +96,29 @@ def create_app(test_config=None):
     def delete_menu_item(jwt, item_id):
         try:
             item = MenuItem.query.filter(MenuItem.id == item_id).one_or_none()
-            if item is None:
-                abort(404)
             item.delete()
             return jsonify({
                 'success': True,
                 'deleted': item_id,
+                'message': 'Question Deleted'
             })
         except:
+            if item is None:
+                abort(404)
             abort(500)
 
     @app.route('/categories', methods=["GET"])
     def get_categories():
         try:
             categories = Category.query.order_by(Category.id).all()
-            paginated_menu = paginate_menu(request, categories)
-            if len(paginated_menu) == 0:
-                abort(404)
+            paginated_categories = paginate(request, categories)
+
             return jsonify({
                 'success': True,
-                'menu_items': paginated_menu,
+                'categories': paginated_categories,
             })
         except:
-            if len(categories) == 0:
+            if len(categories) or paginated_categories == 0:
                 abort(404)
             abort(500)
 
@@ -124,7 +133,7 @@ def create_app(test_config=None):
             category.insert()
             return jsonify({
                 'success': True,
-                'new_item': category.format(),
+                'message': 'Category Added',
             })
         except:
             abort(500)
@@ -138,19 +147,23 @@ def create_app(test_config=None):
             if category is None:
                 abort(404)
             if 'name' in data:
-                name = data.get('name', 'TestCategory')
+                name = data.get('name')
+            else:
+                name = category.name
             if 'description' in data:
-                description = data.get('description', 'TestCategory')
+                description = data.get('description')
+            else:
+                description = category.description
             category = Category(name=name, description=description)
             update()
             return jsonify({
                 'success': True,
-                'new_item': category.format(),
+                'edited_item': category.format(),
             })
         except:
             abort(500)
 
-# Error Handling
+    # Error Handling
 
     @app.errorhandler(422)
     def unprocessable(error):
