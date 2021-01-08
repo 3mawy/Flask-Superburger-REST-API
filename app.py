@@ -2,8 +2,8 @@ import os
 from flask import Flask, jsonify, abort, request
 from flask_cors import CORS
 
-from models import setup_db, MenuItem, Category, Size, update
-from auth import requires_auth
+from src.models import setup_db, MenuItem, Category, Size, update
+from src.auth import requires_auth
 
 ITEMS_PER_PAGE = 10
 
