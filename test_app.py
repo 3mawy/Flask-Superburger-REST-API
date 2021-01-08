@@ -4,7 +4,7 @@ import json
 from flask_sqlalchemy import SQLAlchemy
 
 from app import create_app
-from models import setup_db, MenuItem, Category
+from src.models import setup_db, MenuItem, Category
 
 default_path = 'postgres://postgres:0153@localhost:5432/capstone_test'
 database_path = os.getenv('TEST_DATABASE_URL', default_path)

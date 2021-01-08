@@ -176,9 +176,7 @@ def create_app(test_config=None):
                 description = data.get('description')
             else:
                 description = category.description
-            print(description)
             category = Category(name=name, description=description)
-            print(category.format())
             category = Category.query.get(category_id)
             category.update()
             return jsonify({

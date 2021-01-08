@@ -54,7 +54,7 @@ $ flask run
         - can `get:menu_items`
         - can `get:item_details`
 7. Test the endpoints with [Postman](https://getpostman.com). 
-    - Import the postman collection `./starter_code/backend/udacity-fsnd-udaspicelatte.postman_collection.json`
+    - Import the postman collection `./starter/superburger-test.postman_collection.json`
 
 
 ### Testing
