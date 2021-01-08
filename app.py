@@ -34,6 +34,15 @@ def create_app(test_config=None):
 
         return md_template_string
 
+    @app.route('/api_reference')
+    def get_api_reference():
+        readme_file = open("APIReference.md", "r")
+        md_template_string = markdown.markdown(
+            readme_file.read()
+        )
+
+        return md_template_string
+
     @app.route('/login')
     def get_login_url():
         return redirect("https://superburger.us.auth0.com/authorize?audience=superapi&response_type=token&client_id=T8PjVYnfkeK9T42mOyE3GKSmi5Aw7pVD&redirect_uri=https://superburger-suez.herokuapp.com/", code=302)

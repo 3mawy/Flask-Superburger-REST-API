@@ -68,7 +68,7 @@ python3 src/test_app.py
 
 ##API Reference
 
-Can be fount at the "APIReference.md" file
+Can be found at the [APIReference](/api_reference)
 
 ##Deployment
 
