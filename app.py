@@ -170,15 +170,12 @@ def create_app(test_config=None):
                 abort(404)
             if 'name' in data:
                 name = data.get('name')
-            else:
-                name = category.name
+                category.name = name
             if 'description' in data:
                 description = data.get('description')
-            else:
-                description = category.description
-            category = Category(name=name, description=description)
-            category = Category.query.get(category_id)
-            category.update()
+                category.description = description
+
+            update()
             return jsonify({
                 'success': True,
                 'edited_category': category.format(),
