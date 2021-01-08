@@ -1,7 +1,7 @@
 import os
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, abort, request, redirect
 from flask_cors import CORS
-
+import markdown
 from src.models import setup_db, MenuItem, Category, Size, update
 from src.auth import requires_auth
 
@@ -26,11 +26,21 @@ def create_app(test_config=None):
     CORS(app)
 
     @app.route('/')
-    def get_greeting():
-        excited = os.environ['EXCITED']
-        greeting = "Hello"
-        if excited == 'true': greeting = greeting + "!!!!!"
-        return greeting
+    def get_readme():
+        readme_file = open("README.md", "r")
+        md_template_string = markdown.markdown(
+            readme_file.read()
+        )
+
+        return md_template_string
+
+    @app.route('/login')
+    def get_login_url():
+        return redirect("https://superburger.us.auth0.com/authorize?audience=superapi&response_type=token&client_id=T8PjVYnfkeK9T42mOyE3GKSmi5Aw7pVD&redirect_uri=https://superburger-suez.herokuapp.com/", code=302)
+
+    @app.route('/login-local')
+    def get_login_url_for_local_env():
+        return redirect("https://superburger.us.auth0.com/authorize?audience=superapi&response_type=token&client_id=T8PjVYnfkeK9T42mOyE3GKSmi5Aw7pVD&redirect_uri=https://localhost:5000", code=302)
 
     @app.route('/menuitems', methods=["GET"])
     @requires_auth('get:menu_items')

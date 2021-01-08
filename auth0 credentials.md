@@ -1,4 +1,6 @@
-https://superburger.us.auth0.com/authorize?audience=superapi&response_type=token&client_id=T8PjVYnfkeK9T42mOyE3GKSmi5Aw7pVD&redirect_uri=https://localhost:5000
+LOCAL_ENV: https://superburger.us.auth0.com/authorize?audience=superapi&response_type=token&client_id=T8PjVYnfkeK9T42mOyE3GKSmi5Aw7pVD&redirect_uri=https://localhost:5000
+
+LIVE_PROD: https://superburger.us.auth0.com/authorize?audience=superapi&response_type=token&client_id=T8PjVYnfkeK9T42mOyE3GKSmi5Aw7pVD&redirect_uri=https://superburger-suez.herokuapp.com/
 
 user@superburger.com
 e8ESgF4UtrHiBHp
