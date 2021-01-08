@@ -63,7 +63,7 @@ To run the tests, run
 ```
 dropdb capstone_test
 createdb capstone_test
-python3 test_app.py
+python3 src/test_app.py
 ```
 
 ##API Reference

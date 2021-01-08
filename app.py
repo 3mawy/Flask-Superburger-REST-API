@@ -35,6 +35,7 @@ def create_app(test_config=None):
     @app.route('/menuitems', methods=["GET"])
     @requires_auth('get:menu_items')
     def get_menu_items(jwt):
+        paginated_menu = []
         try:
             items = MenuItem.query.order_by(MenuItem.id).all()
             paginated_menu = paginate(request, items)
@@ -45,7 +46,7 @@ def create_app(test_config=None):
                 'total_items': len(items)
             })
         except:
-            if len(items) == 0 or len(paginated_menu) == 0:
+            if len(items) or len(paginated_menu) == 0:
                 abort(404)
             abort(500)
 
@@ -110,17 +111,17 @@ def create_app(test_config=None):
 
     @app.route('/categories', methods=["GET"])
     def get_categories():
+        paginated_categories = []
         try:
             categories = Category.query.order_by(Category.id).all()
             paginated_categories = paginate(request, categories)
-
             return jsonify({
                 'success': True,
                 'categories': paginated_categories,
                 'total_categories': len(categories)
             })
         except:
-            if len(categories) == 0 or len(paginated_categories) == 0:
+            if len(categories) or len(paginated_categories) == 0:
                 abort(404)
             abort(500)
 
