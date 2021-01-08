@@ -90,9 +90,10 @@ class SuperTestCase(unittest.TestCase):
     def test_edit_category(self):
         res = self.client().patch('/categories/1', json={'name': 'new name'}, headers={'Authorization': auth})
         data = json.loads(res.data)
+
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['success'])
-        self.assertIsNotNone(data['edited_item'])
+        self.assertIsNotNone(data['edited_category'])
 
     def test_404_edit_category_does_not_exist(self):
         res = self.client().get('/category/400', json={'name': 'new name'}, headers={'Authorization': auth})

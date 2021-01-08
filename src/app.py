@@ -5,7 +5,7 @@ from flask_cors import CORS
 from models import setup_db, MenuItem, Category, Size, update
 from auth import requires_auth
 
-ITEMS_PER_PAGE = 8
+ITEMS_PER_PAGE = 10
 
 
 def paginate(request, selection):
@@ -42,9 +42,10 @@ def create_app(test_config=None):
             return jsonify({
                 'success': True,
                 'menu_items': paginated_menu,
+                'total_items': len(items)
             })
         except:
-            if len(items) or len(paginated_menu) == 0:
+            if len(items) == 0 or len(paginated_menu) == 0:
                 abort(404)
             abort(500)
 
@@ -116,9 +117,10 @@ def create_app(test_config=None):
             return jsonify({
                 'success': True,
                 'categories': paginated_categories,
+                'total_categories': len(categories)
             })
         except:
-            if len(categories) or paginated_categories == 0:
+            if len(categories) == 0 or len(paginated_categories) == 0:
                 abort(404)
             abort(500)
 
@@ -154,32 +156,21 @@ def create_app(test_config=None):
                 description = data.get('description')
             else:
                 description = category.description
+            print(description)
             category = Category(name=name, description=description)
-            update()
+            print(category.format())
+            category = Category.query.get(category_id)
+            category.update()
             return jsonify({
                 'success': True,
-                'edited_item': category.format(),
+                'edited_category': category.format(),
             })
         except:
+            if category is None:
+                abort(404)
             abort(500)
 
     # Error Handling
-
-    @app.errorhandler(422)
-    def unprocessable(error):
-        return jsonify({
-            "success": False,
-            "error": 422,
-            "message": "unprocessable"
-        }), 422
-
-    @app.errorhandler(404)
-    def not_found(error):
-        return jsonify({
-            "success": False,
-            "error": 404,
-            "message": "resource not found"
-        }), 404
 
     @app.errorhandler(401)
     def not_authorized(error):
@@ -196,6 +187,22 @@ def create_app(test_config=None):
             "error": 403,
             "message": "forbidden"
         }), 403
+
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            "success": False,
+            "error": 404,
+            "message": "resource not found"
+        }), 404
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return jsonify({
+            "success": False,
+            "error": 422,
+            "message": "unprocessable"
+        }), 422
 
     @app.errorhandler(500)
     def internal_server_error(error):

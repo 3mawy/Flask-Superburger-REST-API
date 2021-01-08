@@ -87,7 +87,9 @@ class Category(db.Model):
     def format(self):
         return {
             'id': self.id,
-            'name': self.name}
+            'name': self.name,
+            'description': self.description
+        }
 
     def insert(self):
         db.session.add(self)
@@ -97,6 +99,8 @@ class Category(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def update(self):
+        db.session.commit()
 
 class Size(db.Model):
     __tablename__ = 'sizes'
