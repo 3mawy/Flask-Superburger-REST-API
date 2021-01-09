@@ -1,4 +1,6 @@
 import os
+import sys
+
 from flask import Flask, jsonify, abort, request, redirect
 from flask_cors import CORS
 import markdown
@@ -6,6 +8,8 @@ from src.models import setup_db, MenuItem, Category, Size, update
 from src.auth import requires_auth
 
 ITEMS_PER_PAGE = 10
+LOGIN_URL = os.getenv('LOGIN_URL')
+LOGIN_LOCAL_URL = os.getenv('LOGIN_LOCAL_URL')
 
 
 def paginate(request, selection):
@@ -45,11 +49,11 @@ def create_app(test_config=None):
 
     @app.route('/login')
     def get_login_url():
-        return redirect("https://superburger.us.auth0.com/authorize?audience=superapi&response_type=token&client_id=T8PjVYnfkeK9T42mOyE3GKSmi5Aw7pVD&redirect_uri=https://superburger-suez.herokuapp.com/", code=302)
+        return redirect(LOGIN_URL, code=302)
 
     @app.route('/login-local')
     def get_login_url_for_local_env():
-        return redirect("https://superburger.us.auth0.com/authorize?audience=superapi&response_type=token&client_id=T8PjVYnfkeK9T42mOyE3GKSmi5Aw7pVD&redirect_uri=https://localhost:5000", code=302)
+        return redirect(LOGIN_LOCAL_URL, code=302)
 
     @app.route('/menuitems', methods=["GET"])
     @requires_auth('get:menu_items')
@@ -64,7 +68,7 @@ def create_app(test_config=None):
                 'menu_items': paginated_menu,
                 'total_items': len(items)
             })
-        except:
+        except BaseException:
             if len(items) or len(paginated_menu) == 0:
                 abort(404)
             abort(500)
@@ -80,7 +84,7 @@ def create_app(test_config=None):
                 'success': True,
                 'menu_item': formated_item,
             })
-        except:
+        except BaseException:
             if item is None:
                 abort(404)
             abort(500)
@@ -99,17 +103,20 @@ def create_app(test_config=None):
 
             if 'item_id' in data:
                 item_id = data.get('item_id', )
-                item = MenuItem(id=item_id, name=name, category_id=category, description=description,
-                                ingredients=ingredients, active=active, )
+                item = MenuItem(id=item_id, name=name, category_id=category,
+                                description=description,
+                                ingredients=ingredients,
+                                active=active, )
             else:
-                item = MenuItem(name=name, category_id=category, description=description,
+                item = MenuItem(name=name, category_id=category,
+                                description=description,
                                 ingredients=ingredients, active=active, )
             item.insert()
             return jsonify({
                 'success': True,
                 'new_item': item.format(),
             })
-        except:
+        except BaseException:
             abort(500)
 
     @app.route('/menuitems/<int:item_id>', methods=["DELETE"])
@@ -123,7 +130,7 @@ def create_app(test_config=None):
                 'deleted': item_id,
                 'message': 'Question Deleted'
             })
-        except:
+        except BaseException:
             if item is None:
                 abort(404)
             abort(500)
@@ -139,7 +146,8 @@ def create_app(test_config=None):
                 'categories': paginated_categories,
                 'total_categories': len(categories)
             })
-        except:
+        except BaseException:
+            print(sys.exc_info())
             if len(categories) or len(paginated_categories) == 0:
                 abort(404)
             abort(500)
@@ -157,7 +165,7 @@ def create_app(test_config=None):
                 'success': True,
                 'message': 'Category Added',
             })
-        except:
+        except BaseException:
             abort(500)
 
     @app.route('/categories/<int:category_id>', methods=["PATCH"])
@@ -165,7 +173,8 @@ def create_app(test_config=None):
     def edit_category(jwt, category_id):
         data = request.get_json()
         try:
-            category = Category.query.filter(Category.id == category_id).one_or_none()
+            category = Category.query.filter(
+                Category.id == category_id).one_or_none()
             if category is None:
                 abort(404)
             if 'name' in data:
@@ -180,7 +189,7 @@ def create_app(test_config=None):
                 'success': True,
                 'edited_category': category.format(),
             })
-        except:
+        except BaseException:
             if category is None:
                 abort(404)
             abort(500)

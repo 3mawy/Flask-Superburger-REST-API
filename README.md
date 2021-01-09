@@ -8,6 +8,17 @@ All backend code follows PEP8 style guidelines.
 - Hosted LIVE at [https://superburger-suez.herokuapp.com/](https://superburger-suez.herokuapp.com/)
 - Authentication: Auth0 JWT, auth login samples can be found in the "auth0 credentials.md" file
 - To login to the LIVE website [Login](/login) to login to the Local ENV use [Login Local](/login-local)
+
+##DATA MODELING:
+src/models.py
+
+The schema for the database and helper methods to simplify API behavior are in models.py:
+
+    There are three tables created: MenuItem, Category, and Size
+
+
+    Each table has an insert, update, delete, and format helper functions.
+
 ##Getting Started
 
 ### Installing Dependencies
@@ -63,7 +74,7 @@ To run the tests, run
 ```
 dropdb capstone_test
 createdb capstone_test
-python3 src/test_app.py
+python3 test_app.py
 ```
 
 ##API Reference

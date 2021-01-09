@@ -1,4 +1,7 @@
-from sqlalchemy import Column, String, Integer, Boolean, create_engine, ForeignKey
+from sqlalchemy import (
+    Column, String, Integer,
+    Boolean, create_engine, ForeignKey
+)
 from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy
 import json
@@ -27,10 +30,18 @@ def setup_db(app, database_path=database_path):
 '''
 Association tables
 '''
-menu_items_sizes = db.Table('menu_items_sizes',
-                            db.Column('item_id', Integer, ForeignKey('menu_items.id'), primary_key=True),
-                            db.Column('size_id', Integer, ForeignKey('sizes.id'), primary_key=True)
-                            )
+menu_items_sizes = db.Table(
+    'menu_items_sizes',
+    db.Column(
+        'item_id',
+        Integer,
+        ForeignKey('menu_items.id'),
+        primary_key=True),
+    db.Column(
+        'size_id',
+        Integer,
+        ForeignKey('sizes.id'),
+        primary_key=True))
 
 
 def update():
@@ -99,8 +110,6 @@ class Category(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def update(self):
-        db.session.commit()
 
 class Size(db.Model):
     __tablename__ = 'sizes'
@@ -124,4 +133,3 @@ class Size(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
-
