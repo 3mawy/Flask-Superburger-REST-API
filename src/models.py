@@ -75,7 +75,8 @@ class MenuItem(db.Model):
             'category': self.category_id,
             'description': self.description,
             'ingredients': self.ingredients,
-            'active': self.active
+            'active': self.active,
+            'sizes': self.sizes
         }
 
     def insert(self):

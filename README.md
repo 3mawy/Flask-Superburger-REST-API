@@ -16,7 +16,6 @@ The schema for the database and helper methods to simplify API behavior are in m
 
     There are three tables created: MenuItem, Category, and Size
 
-
     Each table has an insert, update, delete, and format helper functions.
 
 ## Getting Started
