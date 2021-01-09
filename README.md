@@ -9,7 +9,7 @@ All backend code follows PEP8 style guidelines.
 - Authentication: Auth0 JWT, auth login samples can be found in the "auth0 credentials.md" file
 - To login to the LIVE website [Login](/login) to login to the Local ENV use [Login Local](/login-local)
 
-##DATA MODELING:
+## DATA MODELING:
 src/models.py
 
 The schema for the database and helper methods to simplify API behavior are in models.py:
@@ -19,7 +19,7 @@ The schema for the database and helper methods to simplify API behavior are in m
 
     Each table has an insert, update, delete, and format helper functions.
 
-##Getting Started
+## Getting Started
 
 ### Installing Dependencies
 
